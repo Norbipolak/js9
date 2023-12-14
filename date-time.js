@@ -145,7 +145,14 @@ pl. van egy countDown változónk, ami 10-ről kezdödik
 
 ez a countDown le fog számolni 10-től a minusz végtelenig, mert semmi se állítja le a kódot
 
-Az az érdekessége, hogy
+Az az érdekessége, hogy azt a console.log-ot is elöbb fogja kiírni ami utána van és csak utána kezdi el 
+a számolást
+Ebböl az következik, hogy még normál esetben a kódunk az ugy fut le, hogy fentről lefelé és amig az
+egyik kód nem ér véget, addig a másik kód várakozik 
+A setInterval másképpen müködik, indit egy új végrehajtási szálat és mellette párhuzamos pl.
+le tudott futni a console.log is ami utána volt 
+Ez azért van, hogy a kódódnak ne kelljen addig várni, amig visszaszámol a setInterval, mert ha várnia kéne 
+arra, hogy visszaszámol, akkor az összes többi folyamat meg nem futna le 
 */
 
 console.log("dds");
@@ -153,13 +160,25 @@ console.log("edg");
 
 let countDown = 10;
 
-setInterval(() => {
+const intervalNumber = setInterval(() => {
+    console.log("IntervalNumber: " + intervalNumber)
     countDown--;
 
     console.log(countDown);
 
+    if(countDown === -0)
+    clearInterval(IntervalNumber);
     
 }, 1000);
+
+/*
+Hogyan állítom meg az interval folyamatokat ->
+van egy regisztrációs számuk, ami reprezentálja őket és 
+aminek a segítségével le tudjuk állítani 
+
+IntervalNumber: 7, mert ez a hetedik folyamat amit inditottunk 
+
+*/
 
 console.log("Én is itt vagyok!");
 
