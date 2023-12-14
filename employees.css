@@ -1,0 +1,31 @@
+body {
+    box-sizing: border-box; 
+}
+.container {
+    max-width: 1080px;
+    margin: auto;
+    padding: 15px;
+}
+.grid-4 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-gap: 15px;
+}
+.employee-data { /*ebben szerepelnek, majd az employeek*/
+    border: 1px solid grey;
+    text-align: center;
+    padding: 15px;
+}
+h1, h2, h3, h4, h5, h6 {
+    margin: 10px 0px;
+}
+h4 {
+    color: blue;
+}
+.box {
+    padding: 15px;
+    text-align: center;
+    background-color: #efefef;
+    border: 1px solid #cfcfcf;
+    margin-bottom: 15px; /*ezzel fogunk majd szürni*/
+}

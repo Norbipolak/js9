@@ -151,7 +151,7 @@ Ebböl az következik, hogy még normál esetben a kódunk az ugy fut le, hogy f
 egyik kód nem ér véget, addig a másik kód várakozik 
 A setInterval másképpen müködik, indit egy új végrehajtási szálat és mellette párhuzamos pl.
 le tudott futni a console.log is ami utána volt 
-Ez azért van, hogy a kódódnak ne kelljen addig várni, amig visszaszámol a setInterval, mert ha várnia kéne 
+Ez azért van, hogy a kódódnak ne kelljen arra várni, amig visszaszámol a setInterval, mert ha várnia kéne 
 arra, hogy visszaszámol, akkor az összes többi folyamat meg nem futna le 
 */
 
@@ -163,22 +163,127 @@ let countDown = 10;
 const intervalNumber = setInterval(() => {
     console.log("IntervalNumber: " + intervalNumber)
     countDown--;
-
+    console.log("Its the final countdown: " + countDown); 
+    /*ha csak simán kikonzuluzunk valamit, akkor lefutt, így Its the final countdown!
+    9
+    IntervalNumber: 7
+    Its the final countdown!
+    8
+    */
     console.log(countDown);
 
-    if(countDown === -0)
+    if(countDown === 0) {
     clearInterval(IntervalNumber);
-    
+    console.log("Kabumm!");
+    }
 }, 1000);
 
 /*
 Hogyan állítom meg az interval folyamatokat ->
-van egy regisztrációs számuk, ami reprezentálja őket és 
+van egy (regisztrációs) számuk, ami reprezentálja őket és 
 aminek a segítségével le tudjuk állítani 
 
+A visszatérési értéke a setInterval-nal ez a szám ->
 IntervalNumber: 7, mert ez a hetedik folyamat amit inditottunk 
-
+ennek a segítségével le is tudjuk állítani ezeket a folyamatokat, 
+úgy hogy azt mondjuk eggy if-vel, hogy a countDown elérte a nullát 
+akkor a clearInterval, segítségével leáálítjuk a folyamatot,
+úgy, hogy a clearInterval-nak megadom az intervalNumber-t (ennek a folyamatnak az id-ját, most jelen esetben a 7-et)
+-> így az fog történni, hogy elszámol 0-ig és ezt követően megállítja a folyamatot 
 */
 
 console.log("Én is itt vagyok!");
 
+/*
+Mire használják -> főleg weboldalakon 
+de létre lehet vele hozni egy digitális órát is -> date-time.html
+vagy akár analógot is -> rotate, transform-rotate
+********************************************************************************************************************************************
+*/
+
+/*
+Csináltunk egy id="watch" div-et és html-ben style-val formáztuk
+width: 90px; mert 3 felé szeretnénk osztani (óra, perc, másodperc)
+display: grid; grid-template-columns: 1fr 1fr 1fr; margin: 15px auto; - középen legyen + body-nak text-align: center;
+id="watch" divbe teszünk 3db class="watch-item" div-et, mindegyiknek külön id-val
+szóval van class-juk a formázás miatt és van egy id-juk a lementés miatt 
+1. id="hour" 2. id="minute" 3. id="second" -> lementjük őket 
+*/ 
+const hourDiv = document.querySelector("#hour");
+const minuteDiv = document.querySelector("#minute");
+const secondDiv = document.querySelector("#second");
+
+function watch() {
+    let dt = new Date();
+    hourDiv.innerText = d.getHours().toString().padStart(2, "0");
+    minuteDiv.innerText = d.getMinutes().toString().padStart(2, "0");
+    secondDiv.innerText = d.getSeconds().toString().padStart(2, "0");
+
+    setInterval(()=> {
+        dt = new Date();
+        hourDiv.innerText = d.getHours().toString().padStart(2, "0");
+        minuteDiv.innerText = d.getMinutes().toString().padStart(2, "0");
+        secondDiv.innerText = d.getSeconds().toString().padStart(2, "0");
+    }, 1000);
+}
+
+/*
+Ha nem állítunk be semmilyen paramétert, akkor az éppen aktuális date-t fogja megmondani,
+azért fontos, hogy mindig elkészítsük a new Date() (setInterval-on belül legyen), mert ha csak egyszer
+készítjük el, akkor mindig ugyanazt az időt (setInterval-on belül) fgoja mutatni ->
+az elkészítésének a pillanatában lévő időt.
+
+watch() -> egy másodpercenként, lefutatja ami benne van -> úgy fog müködni, mint egy óra, mert a get seconds 1-vel több lesz 1másodperc után
+setTimeout (egyszer fut le x idő után amit beállítottunk)
+setInterval (mindig lefut olyan időközönként, amit beállítottunk neki)
+
+az a probléma jelenleg, hogy a másodperceket, percet, órát úgy írja ki 10-ig, hogy 1 2 3 4 és mi úgy szeretnénk, hogy 01 02 03 04
+erre az a megoldás, hogy átalakítjuk toString()-é (mert ez number és annál nincsen padStart) és a stringek rendelkeznek egy olyan metódussal, hogy padStart()
+
+function watch() {                                          --->                            function watch() {
+    setInterval(()=> {                                                                      setInterval(()=> {                                               
+        const d = new Date();                                                                   const d = new Date();
+        hourDiv.innerText = d.getHours();                                                       hourDiv.innerText = d.getHours().toString().padStart(2, "0");
+        minuteDiv.innerText = d.getMinutes();                                                   minuteDiv.innerText = d.getMinutes().toString().padStart(2, "0");
+        secondDiv.innerText = d.getSeconds();                                                   secondDiv.innerText = d.getSeconds().toString().padStart(2, "0");
+    }, 1000);                                                                                }, 1000);
+
+padStart(2) -> kettő karakteresnek kell lennie és amig nem éri el a kettőt, addig egészítse ki nulákkal az elejen, mert ez egy padStart();
+*/
+
+/*
+Lehet set-elni is
+Az lényege, hogy meg tudunk valamit változtatni a new Date()-ben, itt pl. a évet fogjuk a setFullYear-vel, az összes többi nem fog változni 
+Sat Nov 21 2009 11:16:39 GMT+0100 (közép-európai téli idő)
+beállítjuk az órát 19 órára
+Sat Nov 21 2009 19:17:05 GMT+0100 (közép-európai téli idő) - ugye azért változott a perc meg a másodperc mert annyival késöbb hívtuk meg a setHours-ot bn
+*/
+
+const dt2 = new Date();
+dt2.setFullYear(2009);
+dt2.setHours(19);
+console.log(dt2);
+
+/*
+Most igy ha megnyitjuk a böngészőt, akkor vár egy másodpercet, mire el kezd számolni, mire lefut a függvény ->
+megcsinálunk mindent ami most a setInterval-ban úgyanúgy a függvényben is, de viszont a setIntervalon kivül 
+annyi különdséggel, hogy a setInterval-ban egy const definiáltuk a dt = new Date()-et 
+most pedig kivül fogjuk definiálni egy let-vel -> let dt = new Date() és a setIntervalon belül pedig újradefiniáljuk egy dt = new Date()-vel
+Lehetne egy függvényt is készíteni a hourDiv, minuteDiv, secondDiv-nek és akkor nem kell duplikálni mindent ->
+*/
+function updateTime() {
+    const currentTime = new Date();
+    hourDiv.innerText = currentTime.getHours().toString().padStart(2, "0");
+    minuteDiv.innerText = currentTime.getMinutes().toString().padStart(2, "0");
+    secondDiv.innerText = currentTime.getSeconds().toString().padStart(2, "0");
+}
+
+function watch() {
+    updateTime(); // Call initially to set the time
+
+    setInterval(updateTime, 1000); // Call updateTime every second using setInterval
+}
+/*
+Csinált egy updateTime függvényt amit meg fogunk hívni a watch függvényben és utána a watch függvényben és a watch függvényben lévő setInterval-nak is átadjuk
+mint paramétert 
+*/
