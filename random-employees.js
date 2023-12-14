@@ -6,6 +6,9 @@ const firstNames = ["István", "Réka", "Balázs", "Katalin", "Sándor", "Emőke
 const lastNames = ["Kis", "Nagy", "Horváth", "Takács", "Pintér", "Szabó"];
 const employees = [];
 const employeeHolder = document.querySelector("#employee-holder");
+const departmentSelect = document.querySelector("#department");
+const firstNameInput = document.querySelector("#firstName");
+const lastNameInput = document.querySelector("#lastName");
 
 /*
 Létrehozunk employee objektumokat és ezt belerakjuk egy employees nevű tömbbe és véletlenszerűen előállítunk employees-okat 
@@ -154,7 +157,9 @@ csinálunk egy showEmployees function-t
 itt fogjuk megjeleniteni az employees tömbben való dolgokat
 */
 
-function showEmployees() {
+function showEmployees(employees) {
+    employeeHolder.innerHTML = "";
+    
     for(const employee of employees) {
         const div = document.createElement("div"); //ezzel létrehozunk egy div-et
         div.classList.add("employee-data"); //ezzel adunk egy class-t a div-nek -> ahogy a html-ben van, mert nem töröltem ki 
@@ -210,3 +215,143 @@ itt majd rá tudunk szürni a departmentre, névre, salary-ra
 */
 
 /*csinálunk a container-ben egy class="box"-os div-et -> ahol a form lesz amivel szürünk*/
+
+/**********************************************************************************************************/
+/* köveztkező óra a 22-i video*/
+
+/*
+Megcsináljuk, hogy rá lehessen keresni a input mezőkkel a First Name, Last Name stb-re
+
+A department majd egy select mező lesz, amiben van egy option, ahol van több lehetőség amiből tudunk választani 
+abban mindig select amiben van option ->
+
+            <div>
+                <h3>Department</h3>
+                <select id="department">
+                    <option value="-1">Válassz részleget</option>
+                </select>
+            </div>
+
+mindegyik input mezőnek adtunk egy id-t 
+A salary, úgy lesz, hogy van két darab input mezőnk egymás alatt, egyik a tól másik az -ig ->
+                <h3>Salary</h3>
+                <input type="number" id="salaryFrom">-tól
+                <input type="number" id="salaryTo">-ig
+                
+legfelülre, lementjük és itt legeneráljuk a departmentet 
+*/
+
+function generateDepartments() {
+    for(let i = 0; i < departments. length; i++) {
+        const option = document.createElement("option");
+        option.innerText = departments[i];
+        option.value = i;
+
+        console.log(option);
+
+        departmentSelect.appendChild(option);
+
+    // for(const department of departments) {
+    //     //option-ök készítése 
+    //     const option = document.createElement("option");
+    //     option.value = value;
+    /*inkább sima for ciklussal csináljuk*/
+    }
+}
+
+generateDepartments();
+
+/*
+csináltunk egy option-t 
+megadtuk az option.innerText-vel az összes departments-et
+option.value - > mondjuk a 3-as indexü department az IT az employees-ban akkor a legördülő mezőben is 3-ik lesz
+
+option.value = i; 
+The line option.value = i; sets the value of each <option> element to the current value of i. 
+In this context, it appears the intention is to assign a numerical value to each department option based on its index in the departments array.
+This can be useful when handling the selected value later through JavaScript, 
+as these numerical values can serve as identifiers for the departments in the dropdown list.
+*/
+
+/*
+most jön a First Name
+lementjük a firstName-t 
+utána adunk neki egy eventListenert -> keyup
+*/
+
+
+
+firstNameInput.addEventListener("keyup", function(){ // keyup az teljesen megegyezik az input-val (mindegy melyiket használjuk)
+//console.log(this.value); ha az input mezőbe (=value) beírunk valamit, akkor kiírjuk az értékét(beirom, hogy a -> megjelenik a console egy a)
+// de bármi lehet amit beirunk, akkor fogja kiírni, ha felengedem a kezem a billentyűről (lenyomva tartom az a-t akkor beírhatok, annyi a-t amig fel nem engedem a kezem a billentyűről)
+const inputValue /= this.value.trim().toLowerCase() // azért kell a this -> mert az arra utal, hogy firstNameInput mezőre és annak az a value-ja amit beírunk oda
+//a showEmployees() várjon nekünk egy paramétert azt, hogy employees -> showEmployees(employees), ezt most egy paraméterből fogja megkapni
+//kivettük a showEmployees meghívását, mert dobna nekünk egy hibát 
+//meghívjuk majd itt a showEmployeest a következő paraméterrel, amit csinálunk 
+firstName = employees.filter((employee)=> employee.firstName.toLowerCase.includes(inputValue));
+//azokat adom vissza amik megfelelnek a filteredEmployees kritériumnak 
+showEmployees(filteredEmployees);
+});                      
+
+/*
+még nem volt jó, igy mert a showEmployees folyamatosan generálta az új dolgokat ezért beírtuk, hogy employeeHolder.innerHTML = ""
+szóval, ha egyszer legenerálta nekünk akkor az innerHTML = "" -> no content, tehát nem fogja tudni, mégegyszer legenerálni 
+
+hogy müködik: 
+az input mezőben beírunk valamit -> inputValue 
+azt szeretnénk, hogy csak azokat jelenitse meg (filter) employee.firstName-ben megtalálható (includes) az amit beírtunk az input mezőbe(inputValue)
+és a végén meghívjuk a showEmployees(filteredEmployees) -> elején ameddig nem írunk be semmit a mezőbe, addig megjelenít mindenkit, de utána 
+viszont, mivel meg van neki értékként adva a filteredEmployees, ami kapcsolatban van az inputValue-vel 
+csak azokat jeleniti meg amelyiknek a firstName-je tartalmazza azt a betűt vagy betűket amit beírtunk az input mezőbe.
+
+Viszont még baj, hogy megkülönbözteti a nagy és kis betűt, pl. azt írom be hogy ré akkor nem talál senkit
+de ha viszont azt írom be, hogy Ré -akkor kijön két Réka. -> ezért az inputValue és a employee.firstName is kap toLowerCase-t
+ha kis betűvel írjuk be, hogy réka utána kijönnek a rékák -> de az nem változik meg, hogy amit látunk a box-ban Réka az nagy betű marad
+*/
+
+/*
+az a probléma, hogy, így csak egyféle inputra tudunk rászürni, mert ha beírnánk valamit a Last Name-hez,
+akkor ezzel a módszerrel az elözőt azt törölné -> 
+beírtuk, hogy Réka a First Name-hez, kijött két Réka, az egyik Pintér a másik Nagy, de ha másikba beírnám, hogy Pintér,
+akkor rákeresne az összes Pintérre
+
+csinálunk egy search függvényt aminek, megadunk két értéket lastName és firstName
+*/
+
+
+function search(firstName, lastName) {
+    firstName = firstName.toLowerCase().trim();
+    lastName = lastName.toLowerCase().trim()
+
+    const filteredEmployees = employees.filter((employee)=>
+    employee.firstName.toLowerCase.includes(firstName)
+    && employee.firstName.toLowerCase.includes(lastName));
+
+    showEmployees(filteredEmployees);
+    
+}
+/*itt irom újra az eventlistenert a változtatások miatt*/ 
+/*létrehozunk egy firstName,, lastName változot üres stringgel az eventListeneren kivül 
+let firstName = ""
+az inputValue-t átírjuk a firstName változóra
+*/
+
+let firstName = "";
+let lastName = "";
+
+firstNameInput.addEventListener("input", function() {
+    firstName = this.value;
+    search(firstName, lastName);
+});
+
+lastNameInput.addEventListener("input", function() {    
+    lastName = this.value;
+    search(firstName, lastName);
+});
+
+/*
+Ilyenkor az történik, hogyha elkezdek írni a firstNameInput-ba, akkor a firstName értéke változni fog és
+ha lastName-be írok akkor a lastNameInput értéke fog változni 
+ha írjuk, hogy réka, akkor megváltozott a firstName értéke és ha másikba írjuk, akkor megváltozik a lastName 
+értéke, de megmarad a firstName is és így tudunk mindegyikre rákeresni 
+*/
