@@ -245,7 +245,7 @@ function generateDepartments() {
     for(let i = 0; i < departments. length; i++) {
         const option = document.createElement("option");
         option.innerText = departments[i];
-        option.value = i;
+        option.value = departments[i];
 
         console.log(option);
 
@@ -266,12 +266,15 @@ csináltunk egy option-t
 megadtuk az option.innerText-vel az összes departments-et
 option.value - > mondjuk a 3-as indexü department az IT az employees-ban akkor a legördülő mezőben is 3-ik lesz
 
-option.value = i; 
+option.value = ; 
 The line option.value = i; sets the value of each <option> element to the current value of i. 
 In this context, it appears the intention is to assign a numerical value to each department option based on its index in the departments array.
 This can be useful when handling the selected value later through JavaScript, 
 as these numerical values can serve as identifiers for the departments in the dropdown list.
 */
+
+// option.value-t késöbb változtattuk departments[i]-re, mert az employeesba névvel tettük be a departmentet és ezért nem tudunk indexre
+//rákeresni
 
 /*
 most jön a First Name
@@ -355,3 +358,83 @@ ha lastName-be írok akkor a lastNameInput értéke fog változni
 ha írjuk, hogy réka, akkor megváltozott a firstName értéke és ha másikba írjuk, akkor megváltozik a lastName 
 értéke, de megmarad a firstName is és így tudunk mindegyikre rákeresni 
 */
+
+/*
+Hogy keresünk rá a departmentekre?
+Másféle eseménykezelő szükséges -> change 
+*/
+
+let department = "";//fontos, hogy let, mert késöbb, új értéket szeretnénk neki adni -> this.value
+let firstName = "";
+let lastName = "";
+
+firstNameInput.addEventListener("input", function() {
+    firstName = this.value;
+    search(firstName, lastName, department);//hozzágyuk ide a department
+});
+
+lastNameInput.addEventListener("input", function() {    
+    lastName = this.value;
+    search(firstName, lastName, department);//hozzágyuk ide a department
+});
+
+departmentSelect.addEventListener("change", function(){
+    department = this.value;
+    search(firstName, lastName, department)
+});
+/*
+Ha megváltozik az értéke akkor keresünk rá a departmentre
+Hogyan? 
+search függvénynek megadjuk a departmentet 3. paraméterként
+*/
+function search(firstName, lastName, department) {
+    firstName = firstName.toLowerCase().trim();
+    lastName = lastName.toLowerCase().trim()
+
+    const filteredEmployees = employees.filter((employee)=>
+    employee.firstName.toLowerCase.includes(firstName)
+    && employee.firstName.toLowerCase.includes(lastName) 
+    && employee.departments.include(department),
+    /*
+    itt a felhasználó nem írhatja be kis-nagybetűvel ezért a toLowerCase() felesleges, ugyanugy mint a trim(), hiszen itt efógy listából 
+    válassza ki és akkor sincs probléma, ha felhasználó nem választ ki semmit, mert a kezdővalue html-ben egy üres string, az minden
+    másik stringben megtalálható, így veszi a JavaScript, tehát az összeset ki fogja hozni, ugyanígy a neveknél is
+    */
+    );
+
+    showEmployees(filteredEmployees);
+}
+
+/*
+Most már ár tudunk keresni mindegyikre pl. First name Sándor és lett 8 Sándor utána kiválasztjuk, hogy IT -> erre is rászűr és 
+így már csak 4 Sándort fog megjeleniteni, akik az IT-ban dolgoznak, Finance-ban egy Sándor dolgozik és így tovább tudunk szűrni 
+departmentre is 
+*/
+
+/*
+Fizetés -> 2 van, ezért muszály mindkettőt lementeni (tól és ig)
+*/
+
+const departments = ["Marketing", "Finance", "IT", "HR", "Production"];
+const firstNames = ["István", "Réka", "Balázs", "Katalin", "Sándor", "Emőke"];
+const lastNames = ["Kis", "Nagy", "Horváth", "Takács", "Pintér", "Szabó"];
+const employees = [];
+const employeeHolder = document.querySelector("#employee-holder");
+const departmentSelect = document.querySelector("#department");
+const firstNameInput = document.querySelector("#firstName");
+const lastNameInput = document.querySelector("#lastName");
+const salaryFromInput = document.querySelector("#salaryFrom");
+const salaryToInput = document.querySelector("#salaryTo");
+
+/*
+Megcsináljuk ugyangy, hogy let = "" és minegyiknek adunk egy eventListenert
+*/
+let salaryFrom = 0;
+let salaryTo = 0;
+
+salaryFromInput.addEventListener("input" function() {
+    salaryFrom = parseInt(this.value);
+    // console.log(salaryFrom); ha beírunk egy számot, az addig ok, de ha kitöröljük akkor azt kapjuk, hogy NaN 
+    //és ez probléma, mert üres stringnél megjelenitette előbb az összeset, de itt NaN nem fogja, ha üresen hagyjuk
+    if(isNaN)
+});
