@@ -156,3 +156,84 @@ The for...of loop is straightforward and simpler for iterating through elements 
 
 Choose the method that best suits your needs based on the context and what you intend to do with the array elements during iteration
 */
+
+/*
+eventListenerek elmagyarázása -> 
+mire utal a this.value
+
+
+In the code snippet provided, this.value 
+refers to the value of the departmentSelect element when the "change" event occurs.
+
+Here's a breakdown of what's happening:
+
+departmentSelect seems to be a reference to an HTML element, 
+presumably a <select> element, which likely represents a dropdown list in the HTML document.
+
+The code snippet is using addEventListener to attach an event listener to the change event of the departmentSelect element. 
+This means that when the value of the <select> element changes (e.g., when an option is selected from the dropdown), 
+the function provided will be executed.
+
+Within the event listener function, this.value 
+refers to the value of the selected option within the <select> element (departmentSelect). 
+When a new option is chosen in the dropdown, this.value retrieves the value attribute of the selected <option> within the <select> element.
+
+For example, if you have HTML like this:
+*/
+<select id="departmentSelect">
+  <option value="engineering">Engineering</option>
+  <option value="marketing">Marketing</option>
+  <option value="sales">Sales</option>
+</select>
+
+const departmentSelect = document.getElementById("departmentSelect");
+
+departmentSelect.addEventListener("change", function () {
+  department = this.value; // 'this.value' gets the value of the selected option
+  // Then you might use the 'department' value in your search function
+  search(firstName, lastName, department, salaryFrom, salaryTo);
+});
+/*
+When a user selects an option from the dropdown, the change event triggers the attached event listener. 
+Inside the listener function, this.value will represent the value of the selected <option>, 
+such as "engineering", "marketing", or "sales", depending on the chosen department. 
+This value can then be used in the search() function or any other relevant logic within your code.
+*/
+
+/*
+
+
+Az egész random-employees.js-be amit írtunk -> 
+It seems like you have a JavaScript object named Employees, 
+which contains various properties and methods to manage and display employee data. Here's a summary of what this object does:
+
+Properties:
+departments: An array containing different department names.
+firstNames: An array containing first names.
+lastNames: An array containing last names.
+employees: An array to store generated employee objects.
+Elements selected from the DOM (e.g., employeeHolder, departmentSelect, firstNameInput, etc.) to interact with HTML elements.
+
+Methods:
+init: Initializes the application by generating departments, creating employees, and setting up event listeners for searching/filtering employees.
+
+search: Filters employees based on provided criteria (first name, last name, department, salary range) and displays the matching employees.
+
+searchFirstName, searchLastName, searchDepartment, searchSalaryFrom, searchSalaryTo:
+Event listener methods that respond to input changes or selections in respective input fields or dropdowns. 
+These methods update the search criteria and trigger the search method to filter employees accordingly.
+
+generateDepartments: Populates the department dropdown in the HTML with options.
+
+createEmployees: Generates random employee objects with random details (first name, last name, salary, and department) and
+ stores them in the employees array.
+
+showEmployees: Renders the filtered employee data in the HTML by creating and appending elements for each employee.
+
+Overall, this code appears to be a simplified employee management system that generates random employees 
+and allows users to search/filter employees based on various criteria such as name, department, 
+and salary range through an interface linked to HTML elements.
+
+és azért jó, ha kint vant a const random -> amelyik generál egy random számot 
+mert, ha mondjuk lenne még lenne több ilyen objektumunk, akkor mindegyiknek elérhető lesz.
+*/
